@@ -1,0 +1,1 @@
+ package com.devops.service;import com.devops.model.User;public class UserService {    public User getDefaultUser() {    	    	//TODO ideally this should come from DB        User user = new User();        user.setFirstName("Gautamdev");        user.setLastName("Khanna");        user.setCountry("India");                return user;    }}

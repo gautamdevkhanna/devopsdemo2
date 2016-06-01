@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="mobilestashrepoprj">
+	<property environment="env" />
+	<property name="junit.output.dir" value="junit" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.7" />
+	<property name="source" value="1.7" />
+	<property name="build-directory" value="build" />
+
+	<path id="Web App Libraries.libraryclasspath">
+		<pathelement location="WebContent/WEB-INF/lib/servlet-api.jar" />
+	</path>
+	<path id="EAR Libraries.libraryclasspath" />
+	<path id="JUnit 4.libraryclasspath">
+		<pathelement location="WebContent/WEB-INF/lib/junit.jar" />
+	</path>
+	<path id="mobilestashrepoprj.classpath">
+		<pathelement location="${build-directory}/classes" />
+		<pathelement location="${build-directory}/test-classes" />
+		<path refid="Web App Libraries.libraryclasspath" />
+		<path refid="EAR Libraries.libraryclasspath" />
+		<path refid="JUnit 4.libraryclasspath" />
+		<pathelement location="WebContent/WEB-INF/lib/servlet-api.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/jersey-server-1.17.1.jar" />	
+		<pathelement location="WebContent/WEB-INF/lib/jersey-servlet-1.17.1.jar" />	
+		<pathelement location="WebContent/WEB-INF/lib/jersey-json-1.17.1.jar" />	
+		<pathelement location="WebContent/WEB-INF/lib/jsr311-api-1.1.1.jar" />	
+		
+		
+	</path>
+	<target name="clean">
+		<delete dir="${build-directory}/classes" />
+		<delete dir="${build-directory}/test-classes" />
+		<delete dir="${junit.output.dir}" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target name="init" depends="cleanall">
+		<mkdir dir="${build-directory}/classes" />
+		<copy includeemptydirs="false" todir="build/classes">
+			<fileset dir="src">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<mkdir dir="${build-directory}/test-classes" />
+				<copy includeemptydirs="false" todir="build/test-classes">
+					<fileset dir="test">
+						<exclude name="**/*.java" />
+					</fileset>
+				</copy>
+	</target>
+	<target depends="init" name="compile">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${build-directory}/classes" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<classpath refid="mobilestashrepoprj.classpath" />
+		</javac>
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${build-directory}/test-classes" includeantruntime="false" source="${source}" target="${target}">
+					<src path="test" />
+					<classpath refid="mobilestashrepoprj.classpath" />
+		</javac>
+	</target>
+	<target name="JunitTestSuite" depends="compile">
+		<mkdir dir="${junit.output.dir}" />
+		<junit fork="yes" printsummary="withOutAndErr" failureproperty="test.failed">
+			<formatter type="xml" />
+			<test name="com.devops.alltests.JunitTestSuite" todir="${junit.output.dir}" />
+			<classpath refid="mobilestashrepoprj.classpath" />
+			<batchtest todir="${junit}">
+				<fileset dir="test">
+					<include name="**/JunitTestSuite.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	<target name="junitreport" depends="JunitTestSuite">
+		 <junitreport todir="${junit.output.dir}">
+			<!--<fileset dir="${junit.output.dir}">
+				<include name="TEST-*.xml" />
+			</fileset> -->
+			<!--<report format="frames" todir="${junit.output.dir}" >
+				</report> -->
+		</junitreport> 
+	</target>
+	
+	<target name="build" depends="junitreport">
+		<antcall target="war"></antcall>
+		<fail message="Test failure detected, check test results." if="test.failed" />
+	</target>
+	<target name="war" unless="test.failed">
+		<property name="project-name" value="mobilestashrepoprj" />
+		<property name="builder" value="ns837883" />
+		<tstamp prefix="build-info">
+				<format property="current-date" pattern="d-MMMM-yyyy" locale="en" />
+				<format property="current-time" pattern="hh:mm:ss" locale="en" />
+		</tstamp>
+		
+		<echo message="buildKey=${bambooBuildNumber}"></echo>
+		
+		<property name="war-file-name" value="${project-name}.war" />
+		<property name="web-xml-file" value="web.xml" />
+		
+		<property name="source-directory" value="src" />
+	
+		<war warfile="${war-file-name}" webxml="WebContent/WEB-INF/${web-xml-file}">
+			<fileset dir="WebContent">
+				<include name="**/*.*" />
+			</fileset>
+
+			<classes dir="${build-directory}/classes" />
+			<manifest>
+				<attribute name="Built-By" value="${builder}" />
+				<attribute name="Built-On" value="${build-info.current-date}" />
+				<attribute name="Built-At" value="${build-info.current-time}" />
+			</manifest>
+		</war>
+	</target>
+</project>

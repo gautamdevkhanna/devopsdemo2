@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>Hello World, AngularJS - ViralPatel.net</title>
+
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd)	{
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style>
+
+
+<script type="text/javascript"   src="js/angular.js"></script>
+
+
+<script type="text/javascript">
+var app = angular.module('myApp', []);
+app.controller('customersCtrl', function($scope, $http) {
+    $http.get("json/customers.json").then(function(response) {
+        $scope.myData = response.data.records;
+    });
+});
+
+app.controller('ContactController', function($scope) {
+       $scope.contacts = [
+							{
+							  "newname": "Gautamdev Khanna",
+							  "newcountry": "Germany",
+							  "Banner": "img/WallBanner.jpg"
+							}
+						];
+
+        $scope.add = function() {
+        //$scope.myData.push( {[  $scope.newname , $scope.newcountry ]} );
+        $scope.newname = "";
+        $scope.country = "";
+        }
+
+});
+</script>
+
+
+
+</head>
+<body>
+<h2> Customer Data is pulled from another json file </h2>
+<!--
+<div ng-controller="ContactController">
+     Enter your Name : <input type="text" ng-model="newname"/><br>
+     Enter your Country :<input type="text" ng-model="newcountry"/><br>
+    <button ng-click="add()">Add</button><br>
+    <h2>Add Contacts</h2>
+     <ul>
+        <li ng-repeat="contact in contacts"> 1. {{ contact.newname + ' , ' + contact.newcountry }} </li>
+    </ul>
+</div>
+{In Progress}
+<br>
+-->
+
+Some changes done..
+<br>
+<table>
+  <tr ng-repeat="x in myData">
+    <td ng-if="$odd" style="background-color:#f1f1f1">
+    {{ x.Name }}</td>
+    <td ng-if="$even">
+    {{ x.Name }}</td>
+    <td ng-if="$odd" style="background-color:#f1f1f1">
+    {{ x.Country }}</td>
+    <td ng-if="$even">
+    {{ x.Country }}</td>
+  </tr>
+</table>
+ 
+ <!--  
+<table>
+  <tr ng-repeat=" x in myData  | orderBy : 'Country' ">
+    <td>{{$index}}  <img ng-src="{{ x.Banner }}" style='width:20px'/> </td>
+    <td>{{   '    ' + x.Name + ', ' + x.Country  }}</td>
+  </tr>
+</table>
+
+
+<ul>
+  <ul ng-repeat="x in myData  | orderBy : 'Country' ">
+     {{$index+1}}  <img ng-src="{{ x.Banner }}" style='width:20px'/>  {{  '    ' + x.Name + ', ' + x.Country | uppercase  }}
+  </ul>
+</ul>
+ -->
+
+</div>
+
+
+<!--
+<div id="ng-app" ng-app ng-controller="PostsCtrlAjax" ng-show="post.author== 'Ravi Tamada'">
+
+<div ng-repeat="post in posts">
+<h2>
+<a href='{{post.url}}'>{{post.title}}</a>
+</h2>
+<div class='time'>{{post.time}} - {{post.author}} </div>
+<p>{{post.description}}</p>
+<img ng-src="{{post.banner}}" />
+</div>
+   
+</div>
+
+
+
+
+
+<script>
+function PostsCtrlAjax($scope, $http)
+{
+$http({method: 'POST', url: 'js/posts.json'}).success(function(data)
+{
+$scope.posts = data; // response data 
+});
+}
+</script>
+
+-->
+</body>
+</html>

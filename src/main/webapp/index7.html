@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+<title>Hello World, AngularJS - ViralPatel.net</title>
+<script type="text/javascript"
+    src="angular.min.js"></script>
+</head>
+<body>
+<h2> Welcome to AngularJS App</h2>
+<div ng-controller="ContactController">
+     Name : <input type="text" ng-model="newname"/>
+     <br>
+     Email:<input type="text" ng-model="newcontact"/>
+     <br>
+    <button ng-click="add()">Add</button>
+    <br>
+    <h2>Contacts</h2>
+ 
+    <ul>
+        <li ng-repeat="contact in contacts"> {{ contact }} </li>
+    </ul>
+ 
+</div>
+<script type="text/javascript">
+    function ContactController($scope) {
+        $scope.contacts = ["hi@email.com", "hello@email.com"];
+ 
+        $scope.add = function() {
+        $scope.contacts.push( $scope.newname + " " + $scope.newcontact);
+        $scope.newname = "";
+        $scope.newcontact = "";
+        }
+    }
+</script>
+</body>
+</html>
